@@ -8,7 +8,7 @@ class SakuraNovel implements Plugin.PluginBase {
   name = 'SakuraNovel';
   icon = 'src/id/sakuranovel/icon.png';
   site = 'https://sakuranovel.id/';
-  version = '1.0.1';
+  version = '1.0.2';
 
   parseNovels(loadedCheerio: CheerioAPI) {
     const novels: Plugin.NovelItem[] = [];
@@ -131,18 +131,17 @@ class SakuraNovel implements Plugin.PluginBase {
     return novel;
   }
 
+  // FIX BARU UNTUK AMBIL ISI CHAPTER
   async parseChapter(chapterPath: string): Promise<string> {
     const result = await fetchApi(this.site + chapterPath);
     const body = await result.text();
-
     const loadedCheerio = parseHTML(body);
 
-    const divi = loadedCheerio("div:contains('Daftar Isi') +")
-      .find('div:first')
-      .attr('class');
-    loadedCheerio(`.${divi}`).remove();
-    const chapterText =
-      loadedCheerio("div:contains('Daftar Isi') +").html() || '';
+    // Hapus elemen yang mengganggu
+    loadedCheerio('.code-block, script, style, .adsbygoogle').remove();
+
+    // Struktur baru: semua isi bab ada di .entry-content
+    const chapterText = loadedCheerio('.entry-content').html() || '';
 
     return chapterText;
   }
@@ -218,7 +217,6 @@ class SakuraNovel implements Plugin.PluginBase {
         { label: 'Gender Bender', value: 'gender-bender' },
         { label: 'Harem', value: 'harem' },
         { label: 'Horror', value: 'horror' },
-        { label: 'Josei', value: 'josei' },
         { label: 'Josei', value: 'josei' },
         { label: 'Martial Arts', value: 'martial-arts' },
         { label: 'Mature', value: 'mature' },
