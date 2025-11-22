@@ -1,0 +1,30 @@
+name: Build Plugins
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Plugins
+        run: npm run build:plugins
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: plugins
+          path: dist
