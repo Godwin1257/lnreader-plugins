@@ -13,13 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Zip plugins folder
-        run: |
-          mkdir output
-          zip -r output/plugins.zip ./plugins
+      - name: Create dist folder
+        run: mkdir -p .dist
 
-      - name: Upload artifact
+      - name: Generate plugins.min.json
+        run: |
+          cat > .dist/plugins.min.json << 'EOF'
+          {
+            "plugins": [
+              {
+                "id": "sakura.id",
+                "name": "SakuraNovel",
+                "version": "1.0.3",
+                "url": "https://raw.githubusercontent.com/Godwin1257/lnreader-plugins/master/plugins/sakura.id/index.js",
+                "icon": "https://raw.githubusercontent.com/Godwin1257/lnreader-plugins/master/plugins/sakura.id/icon.png"
+              }
+            ]
+          }
+          EOF
+
+      - name: Upload dist as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: plugins
-          path: output/plugins.zip
+          name: dist
+          path: .dist
