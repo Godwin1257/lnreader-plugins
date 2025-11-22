@@ -1,0 +1,25 @@
+name: Build Plugins
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Zip plugins folder
+        run: |
+          mkdir output
+          zip -r output/plugins.zip ./plugins
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugins
+          path: output/plugins.zip
